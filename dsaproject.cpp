@@ -68,64 +68,11 @@ vector<Point> adjList[MAX_INT];
 
 void addEdge(Point u, Point v);
 void initMap();
-//Point findPoint(vector<Point> src, string name);
 void findShortestRoute(string src, string dest, const Vehicle& vehicle, const User& user);
 void displayRoute();
 void displayRoutes();
 void menu();
 void printAdjList();
-
-//class Queue {
-//private:
-//    struct QNode {
-//        int data;
-//        QNode* next;
-//        QNode(int d) : data(d), next(nullptr) {}
-//    };
-//
-//    QNode* front, * rear;
-//
-//public:
-//    Queue() : front(nullptr), rear(nullptr) {}
-//
-//    bool isEmpty() {
-//        return (front == nullptr);
-//    }
-//
-//    void enqueue(int item) {
-//        QNode* temp = new QNode(item);
-//        if (rear == nullptr) {
-//            front = rear = temp;
-//            return;
-//        }
-//        rear->next = temp;
-//        rear = temp;
-//    }
-//
-//    int dequeue() {
-//        if (isEmpty())
-//            return -1;
-//        QNode* temp = front;
-//        front = front->next;
-//        if (front == nullptr)
-//            rear = nullptr;
-//        int item = temp->data;
-//        delete temp;
-//        return item;
-//    }
-//
-//    int frontItem() {
-//        if (isEmpty())
-//            return -1;
-//        return front->data;
-//    }
-//
-//    int rearItem() {
-//        if (isEmpty())
-//            return -1;
-//        return rear->data;
-//    }
-////};
 
 int main() {
 
@@ -177,6 +124,8 @@ void initMap() {
     addEdge(dha2, dha4);
     dha4.distance = 1.5; dha5.distance = 1.5;
     addEdge(dha4, dha5);
+	dha2.distance = 5.7; dha5.distance = 5.7;
+	addEdge(dha2, dha5);
     dha5.distance = 3.0; beach.distance = 3.0;
     addEdge(dha5, beach);
     beach.distance = 2.0; teenTalwar.distance = 2.0;
@@ -221,105 +170,118 @@ int findPointIndex(string name) {
     return -1;
 }
 
-//for (int i = 0; i < MAX_INT; ++i) {
-//    int u = -1;
-//    for (int j = 0; j < MAX_INT; ++j) {
-//        if (!visited[j] && (u == -1 || dist[j] < dist[u])) {
-//            u = j;
-//        }
-//    }
-//
-//    if (dist[u] == MAX_INT) {
-//        break;
-//    }
-//
-//    visited[u] = true;
-//
-//    for (const auto& neighbor : adjList[u]) {
-//        int v = neighbor.id;
-//        double weight = neighbor.distance;
-//
-//        if (dist[u] + weight < dist[v]) {
-//            dist[v] = dist[u] + weight;
-//            prev[v] = u;
-//        }
-//    }
-//}
 
-//vector<int> path;
-//for (int at = destId; at != -1; at = prev[at]) {
-//    path.push_back(at);
-//}
-//reverse(path.begin(), path.end());
+//void findShortestRoute(string src, string dest, Vehicle& vehicle, User& user) {
+//    vector<double> dist(MAX_INT, MAX_INT);
+//    vector<int> prev(MAX_INT, -1);
+//    vector<bool> known(MAX_INT, false);
 //
-//if (path.size() == 1 && path[0] != srcId) {
-//    return {}; // No path found
-//}
+//    int srcIndex = findPointIndex(src);
+//    int destIndex = findPointIndex(dest);
 //
-//vector<Route> routes;
-//for (size_t i = 0; i < path.size() - 1; ++i) {
-//    Point start = adjList[path[i]][0];
-//    Point end = adjList[path[i + 1]][0];
-//    double totalDistance = start.distance;
-//    double totalPetrol = totalDistance * vehicle.litrePerKm;
-//    double totalTime = totalDistance * vehicle.minsPerKm;
+//    if (srcIndex == -1 || destIndex == -1) {
+//        cout << "Invalid source or destination." << endl;
+//        return;
+//    }
 //
-//    Route route = { vehicle, user, start, end, totalDistance, totalPetrol, totalTime, false };
-//    routes.push_back(route);
-//}
+//    dist[srcIndex] = 0;
+//
 
-void findShortestRoute(string src, string dest, const Vehicle& vehicle, const User& user) {
+
+    //    while (!known[findPointIndex(dest)]) {
+    //        cout << "Entered while loop\n";
+    //        if (!known[current]) {
+    //            cout << "Entered if statement\n";
+    //            for (auto &neighbor : adjList[current]) {
+    //                cout << "Entered in neighbor id " << neighbor.id << endl;
+    //                if (!known[neighbor.id]) {
+    //                    cout << "Entered neighbor not known\n";
+    //                    if (dist[neighbor.id] > neighbor.distance + dist[current]) {
+    //                        cout << "Neighbour distance changed\n";
+    //                        dist[neighbor.id] = neighbor.distance + dist[current];
+    //                        prev[neighbor.id] = current;
+    //                    }
+    //                    if (min > dist[neighbor.id]) {
+    //                        cout << "Entered min condition\n";
+    //                        min = dist[neighbor.id];
+    //                    }
+    //                }
+    //            }
+    //            for (int j = 0; j < MAX_INT; j++) {
+    //                cout << "Entered for loop\n";
+    //                if (dist[j] == min) {
+    //                    cout << "Updated current to " << j << endl;
+    //                    current = j;
+    //                    known[j] = true;
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
+
+void findShortestRoute(string src, string dest, const Vehicle & vehicle, const User & user) {
     vector<double> dist(MAX_INT, MAX_INT);
     vector<int> prev(MAX_INT, -1);
     vector<bool> known(MAX_INT, false);
-	int current = findPointIndex(src);
-    dist[current] = 0;
-    int min = MAX_INT;
+    int srcIndex = findPointIndex(src);
+    int destIndex = findPointIndex(dest);
 
+    if (srcIndex == -1 || destIndex == -1) {
+        cout << "Invalid source or destination." << endl;
+        return;
+    }
 
-
-
-
-
-
-    while (!known[findPointIndex(dest)]) {
-        cout << "Entered while loop\n";
-        if (!known[current]) {
-            cout << "Entered if statement\n";
-            for (auto &neighbor : adjList[current]) {
-                cout << "Entered in neighbor id " << neighbor.id << endl;
-                if (!known[neighbor.id]) {
-                    cout << "Entered neighbor not known\n";
-                    if (dist[neighbor.id] > neighbor.distance + dist[current]) {
-                        cout << "Neighbour distance changed\n";
-                        dist[neighbor.id] = neighbor.distance + dist[current];
-                        prev[neighbor.id] = current;
-                    }
-                    if (min > dist[neighbor.id]) {
-                        cout << "Entered min condition\n";
-                        min = dist[neighbor.id];
-                    }
-                }
+    dist[srcIndex] = 0;
+    for (int i = 0; i < MAX_INT; ++i) {
+        int u = -1;
+        for (int j = 0; j < MAX_INT; ++j) {
+            if (!known[j] && (u == -1 || dist[j] < dist[u])) {
+                u = j;
             }
-            for (int j = 0; j < MAX_INT; j++) {
-                cout << "Entered for loop\n";
-                if (dist[j] == min) {
-                    cout << "Updated current to " << j << endl;
-                    current = j;
-                    known[j] = true;
-                    break;
-                }
+        }
+
+        if (dist[u] == MAX_INT) {
+            break;
+        }
+
+        known[u] = true;
+
+        for (const Point& neighbor : adjList[u]) {
+            double alt = dist[u] + neighbor.distance;
+            if (alt < dist[neighbor.id]) {
+                dist[neighbor.id] = alt;
+                prev[neighbor.id] = u;
             }
         }
     }
-    //for (int i = 0; i < MAX_INT; i++) {
-    //    if (known[findPointIndex(dest)]) {
-    //        cout << dist[i] << endl;
-    //        cout << prev[i] << endl;
-    //    }
-    //}
-}
 
+    if (dist[destIndex] == numeric_limits<double>::infinity()) {
+        cout << "No route found from " << src << " to " << dest << "." << endl;
+        return;
+    }
+
+    vector<int> path;
+    for (int at = destIndex; at != -1; at = prev[at]) {
+        path.push_back(at);
+    }
+    reverse(path.begin(), path.end());
+
+    cout << "Shortest route from " << src << " to " << dest << ":" << endl;
+    for (int i = 0; i < path.size(); ++i) {
+        cout << nodes[path[i]];
+        if (i < path.size() - 1) {
+            cout << " -> ";
+        }
+    }
+    cout << endl;
+
+    double totalDistance = dist[destIndex];
+    double totalPetrol = totalDistance * vehicle.litrePerKm;
+    double totalTime = totalDistance * vehicle.minsPerKm;
+
+    cout << "Distance: " << totalDistance << " km, Petrol: " << totalPetrol << " liters, Time: " << totalTime << " mins" << endl;
+}
 
 
 void displayRoute() {
