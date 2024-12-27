@@ -3,7 +3,7 @@
 #include <string>
 
 using namespace std;
-const int MAX_INT = 100;
+const int MAX_INT = 20;
 
 struct Point {
     int id;
@@ -272,26 +272,52 @@ void findShortestRoute(string src, string dest, const Vehicle& vehicle, const Us
     vector<double> dist(MAX_INT, MAX_INT);
     vector<int> prev(MAX_INT, -1);
     vector<bool> known(MAX_INT, false);
-    dist[findPointIndex(src)] = 0;
-	known[findPointIndex(src)] = true;
+	int current = findPointIndex(src);
+    dist[current] = 0;
+    int min = MAX_INT;
 
-    cout << findPointIndex(src) << endl;
 
-    for (int i = 0; i < MAX_INT; i++) {
-        if (!known[i]) {
-            for (auto &neighbor : adjList[i]) {
-				dist[neighbor.id] = neighbor.distance;
-				prev[neighbor.id] = i;
-				known[neighbor.id] = true;
+
+
+
+
+
+    while (!known[findPointIndex(dest)]) {
+        cout << "Entered while loop\n";
+        if (!known[current]) {
+            cout << "Entered if statement\n";
+            for (auto &neighbor : adjList[current]) {
+                cout << "Entered in neighbor id " << neighbor.id << endl;
+                if (!known[neighbor.id]) {
+                    cout << "Entered neighbor not known\n";
+                    if (dist[neighbor.id] > neighbor.distance + dist[current]) {
+                        cout << "Neighbour distance changed\n";
+                        dist[neighbor.id] = neighbor.distance + dist[current];
+                        prev[neighbor.id] = current;
+                    }
+                    if (min > dist[neighbor.id]) {
+                        cout << "Entered min condition\n";
+                        min = dist[neighbor.id];
+                    }
+                }
+            }
+            for (int j = 0; j < MAX_INT; j++) {
+                cout << "Entered for loop\n";
+                if (dist[j] == min) {
+                    cout << "Updated current to " << j << endl;
+                    current = j;
+                    known[j] = true;
+                    break;
+                }
             }
         }
     }
-	for (int i = 0; i < MAX_INT; i++) {
-        if (known[findPointIndex(dest)]) {
-            cout << dist[i] << endl;
-            cout << prev[i] << endl;
-        }
-	}
+    //for (int i = 0; i < MAX_INT; i++) {
+    //    if (known[findPointIndex(dest)]) {
+    //        cout << dist[i] << endl;
+    //        cout << prev[i] << endl;
+    //    }
+    //}
 }
 
 
