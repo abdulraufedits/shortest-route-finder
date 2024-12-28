@@ -3,7 +3,7 @@
 #include <string>
 
 using namespace std;
-const int MAX_INT = 20;
+const int MAX_INT = 200;
 
 struct Point {
     int id;
@@ -18,10 +18,10 @@ struct User {
     bool isUrgent = false;
 };
 
+User user;
+
 struct Vehicle {
     string type;
-    string model;
-    string numPlate;
     double litrePerKm;
     double minsPerKm;
 };
@@ -34,7 +34,6 @@ struct Route {
     double totalDistance;
     double totalPetrol;
     double totalTime;
-    bool isCompleted = false;
 };
 
 struct Node {
@@ -68,28 +67,21 @@ vector<Point> adjList[MAX_INT];
 
 void addEdge(Point u, Point v);
 void initMap();
-void findShortestRoute(string src, string dest, const Vehicle& vehicle, const User& user);
-void displayRoute();
+void findShortestRoute(string src, string dest, Route route);
 void displayRoutes();
-void menu();
+int menu();
 void printAdjList();
 
 int main() {
-
+    int exit = 0;
     initMap();
-	printAdjList();
-    cout << "-------------------------------------\n";
-    Vehicle vehicle = { "Car", "Toyota", "XYZ123", 0.1, 2.0 }; // Example vehicle
-    User user = { 1, "John Doe", "1234567890", false }; // Example user
-	findShortestRoute("DHA Phase-2", "Beach", vehicle, user);
-    //int srcId = 1; // Example source point ID
-    //int destId = 7; // Example destination point ID
-    //Route route = findShortestRoute(srcId, destId, vehicle, user);
-
-    //cout << "Shortest route from " << srcId << " to " << destId << ":" << endl;
-    //cout << "From " << route.start.name << " to " << route.end.name << endl;
-    //cout << "Distance: " << route.totalDistance << " km, Petrol: " << route.totalPetrol << " liters, Time: " << route.totalTime << " mins" << endl;
-
+    cout << "--------------Welcome to the Shortest Route Finder desktop app!---------------" << endl;
+    while (true) {
+        exit = menu();
+		if (exit == -1) {
+			break;
+		}
+    }
     return 0;
 }
 
@@ -171,56 +163,10 @@ int findPointIndex(string name) {
 }
 
 
-//void findShortestRoute(string src, string dest, Vehicle& vehicle, User& user) {
-//    vector<double> dist(MAX_INT, MAX_INT);
-//    vector<int> prev(MAX_INT, -1);
-//    vector<bool> known(MAX_INT, false);
-//
-//    int srcIndex = findPointIndex(src);
-//    int destIndex = findPointIndex(dest);
-//
-//    if (srcIndex == -1 || destIndex == -1) {
-//        cout << "Invalid source or destination." << endl;
-//        return;
-//    }
-//
-//    dist[srcIndex] = 0;
-//
 
-
-    //    while (!known[findPointIndex(dest)]) {
-    //        cout << "Entered while loop\n";
-    //        if (!known[current]) {
-    //            cout << "Entered if statement\n";
-    //            for (auto &neighbor : adjList[current]) {
-    //                cout << "Entered in neighbor id " << neighbor.id << endl;
-    //                if (!known[neighbor.id]) {
-    //                    cout << "Entered neighbor not known\n";
-    //                    if (dist[neighbor.id] > neighbor.distance + dist[current]) {
-    //                        cout << "Neighbour distance changed\n";
-    //                        dist[neighbor.id] = neighbor.distance + dist[current];
-    //                        prev[neighbor.id] = current;
-    //                    }
-    //                    if (min > dist[neighbor.id]) {
-    //                        cout << "Entered min condition\n";
-    //                        min = dist[neighbor.id];
-    //                    }
-    //                }
-    //            }
-    //            for (int j = 0; j < MAX_INT; j++) {
-    //                cout << "Entered for loop\n";
-    //                if (dist[j] == min) {
-    //                    cout << "Updated current to " << j << endl;
-    //                    current = j;
-    //                    known[j] = true;
-    //                    break;
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
-
-void findShortestRoute(string src, string dest, const Vehicle & vehicle, const User & user) {
+void findShortestRoute(string src, string dest, Route route) {
+    
+     
     vector<double> dist(MAX_INT, MAX_INT);
     vector<int> prev(MAX_INT, -1);
     vector<bool> known(MAX_INT, false);
@@ -267,7 +213,7 @@ void findShortestRoute(string src, string dest, const Vehicle & vehicle, const U
     }
     reverse(path.begin(), path.end());
 
-    cout << "Shortest route from " << src << " to " << dest << ":" << endl;
+    cout << "\nShortest route from " << src << " to " << dest << ":" << endl;
     for (int i = 0; i < path.size(); ++i) {
         cout << nodes[path[i]];
         if (i < path.size() - 1) {
@@ -276,30 +222,91 @@ void findShortestRoute(string src, string dest, const Vehicle & vehicle, const U
     }
     cout << endl;
 
-    double totalDistance = dist[destIndex];
-    double totalPetrol = totalDistance * vehicle.litrePerKm;
-    double totalTime = totalDistance * vehicle.minsPerKm;
+	route.user = user;
+	route.vehicle = Vehicle{ "Car", 0.3, 6.0 };
+    route.totalDistance = dist[destIndex];
 
-    cout << "Distance: " << totalDistance << " km, Petrol: " << totalPetrol << " liters, Time: " << totalTime << " mins" << endl;
+    route.totalPetrol = route.totalDistance * route.vehicle.litrePerKm;
+    route.totalTime = route.totalDistance * route.vehicle.minsPerKm;
+
+    cout << "Distance: " << route.totalDistance << " km\nTotal Time:\n";
+    cout << "By Car (" << route.totalTime <<" minutes)\n";
+
+	route.vehicle = Vehicle{ "Motorbike", 0.14, 7.1 };
+    route.totalPetrol = route.totalDistance * route.vehicle.litrePerKm;
+    route.totalTime = route.totalDistance * route.vehicle.minsPerKm;
+
+    cout << "By motorbike (" << route.totalTime << " minutes)\n";
+
+    route.vehicle = Vehicle{ "Bicycle", 0, 10.0 };
+    route.totalPetrol = route.totalDistance * route.vehicle.litrePerKm;
+    route.totalTime = route.totalDistance * route.vehicle.minsPerKm;
+
+	cout << "By bicycle (" << route.totalTime << " minutes)\n";
+
+    route.vehicle = Vehicle{ "Foot", 0, 20.0 };
+    route.totalPetrol = route.totalDistance * route.vehicle.litrePerKm;
+    route.totalTime = route.totalDistance * route.vehicle.minsPerKm;
+
+	cout << "By foot (" << route.totalTime << " minutes)\n";
+	cout << "-------------------------------------\n";
+	return;
 }
 
 
-void displayRoute() {
-    // Display ride details
+int menu() {
+    int option = 0;
+    Route route;
+    string src, dest;
+	cout << "Please select an option:" << endl;
+	cout << "[1] Find a route" << endl;
+	cout << "[2] See all routes" << endl;
+	cout << "[3] Exit application" << endl;
+	cin >> option;
+    if (option == 1) {
+        again:
+		cout << "Source: Search for a place\n";
+        cin.ignore();
+        getline(cin, src);
+        if (findPointIndex(src) == -1) {
+			cout << "Place not found.\n";
+			goto again;
+        }
+		route.start = { findPointIndex(src), src };
+	    again2:
+		cout << "Destination: Search for a place\n";
+        getline(cin, dest);
+        if (findPointIndex(dest) == -1) {
+			cout << "Place not found.\n";
+			goto again2;
+        }
+		route.end = { findPointIndex(dest), dest };
+		cout << "Finding the shortest route from " << src << " to " << dest << "..." << endl;
+        findShortestRoute(src, dest, route);
+	}
+	else if (option == 2) {
+		displayRoutes();
+	}
+	else if (option == 3) {
+		cout << "Exiting application..." << endl;
+        return -1;
+	}
+    else {
+        cout << "Invalid option." << endl;
+    }
 }
 
 void displayRoutes() {
-    // Display all rides
-}
-
-void menu() {
-    // Implement the command-line interface here
-    cout << "Welcome to the Google Maps alternate desktop app!" << endl;
-    // Add options to find routes, display rides, etc.
+    // Display all routes
+    for (int i = 0; i < MAX_INT; i++) {
+        if (nodes[i] != "") {
+            cout << (i + 1) << " " << nodes[i] << endl;
+        }
+    }
 }
 
 void printAdjList() {
-    for (int i = 0; i < 18; i++) {
+    for (int i = 0; i < 20; i++) {
 		cout << nodes[i] << " is connected to : ";
         for(Point p: adjList[i]) {
             cout << "-> " << p.id << " " << p.name <<" (" << p.distance << "km) ";
